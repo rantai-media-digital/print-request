@@ -1,6 +1,6 @@
 'use client';
-import { Icon, Shell, Stepper } from './ui';
-import { COL, cnt, cost, editCost, eff, rp, total } from '@/lib/pricing';
+import { Icon, Shell, Stepper, Thumb } from './ui';
+import { COL, cnt, cost, editCost, eff, isLs, meta, rp, total } from '@/lib/pricing';
 import type { App } from '@/lib/useApp';
 
 export function PreviewView({ app }: { app: App }) {
@@ -8,7 +8,7 @@ export function PreviewView({ app }: { app: App }) {
   const L = files.flatMap(f => Array.from({ length: Math.min(cnt(f, eff(f, g)), f.pages) }, (_, i) => [f, i + 1] as const));
   const i = Math.min(app.pv, L.length - 1);
   if (!L.length) return null;
-  const [f, p] = L[i], e = eff(f, g);
+  const [f, p] = L[i], e = eff(f, g), ls = isLs(e.orient);
   return (
     <Shell app={app}>
       <Stepper n={3} />
@@ -18,13 +18,13 @@ export function PreviewView({ app }: { app: App }) {
       <div className="cols"><div className="sk">
       <div className="card" style={{ padding: 0, overflow: 'hidden' }}>
         <div className="fh" style={{ padding: 16 }}>
-          <div className="fi"><Icon n="file" /></div>
-          <div style={{ flex: 1 }}><div className="n">{f.name}</div><small>{f.pages} halaman · {f.ext}</small></div>
-          <small style={{ fontWeight: 600 }}>{e.orient}</small>
+          <Thumb f={f} />
+          <div style={{ flex: 1 }}><div className="n">{f.name}</div><small>{meta(f)}</small></div>
+          <span className="tag o">{e.orient}</span>
         </div>
-        <div className="pv" style={{ margin: 0 }}>
-          <div className="pg">{f.thumb ? <img src={f.thumb} alt="" /> : <div style={{ padding: 10, textAlign: 'left', width: '100%' }}><b style={{ color: '#334' }}>{f.name}</b><br />Halaman {p}</div>}</div>
-          <small style={{ color: 'var(--mut)' }}>Contoh pratinjau</small>
+        <div className="pv st" style={{ margin: 0 }}>
+          <div className={'pg' + (ls ? ' ls' : '')}>{f.thumb ? <img src={f.thumb} alt={'Pratinjau ' + f.name} /> : <div style={{ padding: 10, textAlign: 'left', width: '100%' }}><b style={{ color: '#334' }}>{f.name}</b><br />Halaman {p}</div>}</div>
+          <small style={{ color: 'var(--mut)' }}>Kertas A4 · {ls ? 'Mendatar' : 'Tegak'} · contoh pratinjau</small>
         </div>
         <div className="pgr" style={{ padding: '12px 16px' }}>
           <button onClick={() => app.movePv(-1, L.length)} aria-label="Sebelumnya"><Icon n="l" /></button>

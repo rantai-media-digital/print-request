@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
-import { ColorPick, Icon, Sel, Shell, Stepper } from './ui';
-import { OPT } from '@/lib/pricing';
+import { ColorPick, Icon, Sel, Shell, Stepper, Thumb } from './ui';
+import { OPT, meta } from '@/lib/pricing';
 import type { App } from '@/lib/useApp';
 
 export function UploadView({ app }: { app: App }) {
@@ -20,8 +20,20 @@ export function UploadView({ app }: { app: App }) {
         <div className="big"><Icon n="file" /></div>
         <h2>Satu file atau sekaligus banyak</h2><p>PDF, DOC, DOCX, JPG, PNG<span className="dkt"> · atau seret file ke sini</span></p>
         <button className="btn p" onClick={app.pick}><Icon n="up" />Pilih file dari perangkat</button>
-        <p style={{ margin: 0 }}>{n ? `${n} file terpilih` : 'Pilih beberapa file untuk unggah batch.'}</p>
+        <p style={{ margin: 0 }}>{app.reading ? 'Membaca file…' : n ? 'Bisa tambah file lagi kapan saja.' : 'Pilih beberapa file untuk unggah batch.'}</p>
       </div>
+      {n > 0 && (
+        <div className="card ul">
+          <div className="ulh"><h3>File terunggah</h3><span className="ok"><Icon n="check" />{n} file</span></div>
+          {files.map(f => (
+            <div className="fh ulr" key={f.id}>
+              <Thumb f={f} lg />
+              <div style={{ flex: 1 }}><div className="n">{f.name}</div><small>{meta(f)}</small></div>
+              <button className="ib" style={{ color: 'var(--mut)' }} onClick={() => app.delFile(f.id)} aria-label={'Hapus ' + f.name}><Icon n="trash" /></button>
+            </div>
+          ))}
+        </div>
+      )}
       <label className="f">Nama pemesan</label>
       <input className="t" value={name} onChange={e => setName(e.target.value)} placeholder="Nama kamu" style={{ marginBottom: 20 }} />
       </div><div>

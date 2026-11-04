@@ -1,6 +1,6 @@
 'use client';
-import { ColorPick, Icon, Shell, Stepper } from './ui';
-import { COL, sz, summ } from '@/lib/pricing';
+import { ColorPick, Icon, Shell, Stepper, Thumb } from './ui';
+import { COL, meta, summ } from '@/lib/pricing';
 import type { App } from '@/lib/useApp';
 
 export function ListView({ app }: { app: App }) {
@@ -22,8 +22,8 @@ export function ListView({ app }: { app: App }) {
       {files.map(f => (
         <div className="card" key={f.id}>
           <div className="fh">
-            <div className="fi"><Icon n="file" /></div>
-            <div style={{ flex: 1 }}><div className="n">{f.name}</div><small>{f.pages} halaman · {sz(f.size)}</small></div>
+            <Thumb f={f} />
+            <div style={{ flex: 1 }}><div className="n">{f.name}</div><small>{meta(f)}</small></div>
             <button className="ib" style={{ color: 'var(--mut)' }} onClick={() => app.delFile(f.id)} aria-label="Hapus"><Icon n="trash" /></button>
           </div>
           <div style={{ marginTop: 12 }}><ColorPick app={app} id={f.id} /></div>

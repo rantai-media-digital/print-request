@@ -16,6 +16,7 @@ export function useApp() {
   const [inv, setInv] = useState<Order | null>(null);
   const [hist, setHist] = useState<Order[]>([]);
   const [busy, setBusy] = useState(false);
+  const [reading, setReading] = useState(false);
   const seq = useRef(0);
 
   useEffect(() => { try { setHist(JSON.parse(localStorage.getItem(KEY) || '[]')); } catch {} }, []);
@@ -33,13 +34,18 @@ export function useApp() {
       if (v === g[k]) delete ov[k]; else ov[k] = v;
       return { ...f, ov };
     }));
-  const delFile = (id: number) => { const r = files.filter(f => f.id !== id); setFiles(r); if (!r.length) go('upload'); };
+  const delFile = (id: number) => {
+    const t = files.find(f => f.id === id)?.thumb; if (t) URL.revokeObjectURL(t);
+    const r = files.filter(f => f.id !== id); setFiles(r);
+    if (!r.length && view !== 'upload') go('upload');
+  };
   const applyAll = () => setFiles(fs => fs.map(f => ({ ...f, ov: {} })));
   const openDetail = (id: number) => { setCur(id); go('detail'); };
   const movePv = (d: number, n: number) => setPv(p => (p + d + n) % n);
 
   async function addFiles(list: File[]) {
     const add: PFile[] = [];
+    setReading(true);
     for (const file of list) {
       const ext = (file.name.split('.').pop() || '').toUpperCase();
       let pages = 1, thumb: string | undefined;
@@ -52,6 +58,7 @@ export function useApp() {
       add.push({ id: ++seq.current, name: file.name, size: file.size, pages, ext, thumb, file, ov: {}, edit: false, note: '' });
     }
     setFiles(fs => [...fs, ...add]);
+    setReading(false);
   }
   const pick = () => {
     const i = document.createElement('input');
@@ -79,6 +86,6 @@ export function useApp() {
   const openInv = (i: number) => { setInv(hist[i]); go('inv'); };
 
   return { view, go, back, reset, name, setName, g, setG, files, patchFile, setOv, delFile, applyAll, pick, addFiles,
-    cur, openDetail, pv, movePv, inv, hist, busy, confirm, resend, openInv };
+    cur, openDetail, pv, movePv, inv, hist, busy, reading, confirm, resend, openInv };
 }
 export type App = ReturnType<typeof useApp>;

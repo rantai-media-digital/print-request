@@ -37,6 +37,11 @@ export const toItem = (f: PFile, g: Settings): OrderItem => {
     range: e.range, edit: f.edit, note: f.note, cost: cost(f, g) };
 };
 
+export const isLs = (o: string) => o === 'Mendatar';
+const noCount = (f: PFile) => f.ext === 'DOC' || f.ext === 'DOCX';
+export const pgText = (f: PFile) => (noCount(f) ? 'Jumlah halaman belum terdeteksi' : `${f.pages} halaman`);
+export const meta = (f: PFile) => [f.ext, pgText(f), sz(f.size)].join(' · ');
+
 export const rp = (n: number) => 'Rp' + n.toLocaleString('id-ID');
 const BLN = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
 export const fd = (t: number) => { const d = new Date(t); return `${d.getDate()} ${BLN[d.getMonth()]} ${d.getFullYear()}`; };

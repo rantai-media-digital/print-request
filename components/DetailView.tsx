@@ -1,6 +1,6 @@
 'use client';
-import { ColorPick, Icon, Sel, Shell } from './ui';
-import { OPT, cnt, eff, editCost, rp, sz } from '@/lib/pricing';
+import { ColorPick, Icon, Sel, Shell, Thumb } from './ui';
+import { OPT, cnt, eff, editCost, meta, rp } from '@/lib/pricing';
 import type { App } from '@/lib/useApp';
 
 export function DetailView({ app }: { app: App }) {
@@ -14,7 +14,7 @@ export function DetailView({ app }: { app: App }) {
       <h1>Detail cetak file</h1>
       <p className="sub">Pengaturan ini hanya untuk file yang dipilih, bukan untuk seluruh lampiran.</p>
       <div className="cols"><div>
-      <div className="card"><div className="fh"><div className="fi"><Icon n="file" /></div><div><div className="n">{f.name}</div><small>{f.pages} halaman · {sz(f.size)}</small></div></div></div>
+      <div className="card"><div className="fh"><Thumb f={f} /><div><div className="n">{f.name}</div><small>{meta(f)}</small></div></div></div>
       <div className="card">
         <div style={{ display: 'flex', justifyContent: 'space-between' }}><h3>Pengaturan personal</h3><button className="hl" onClick={() => app.patchFile(f.id, { ov: {} })}>Ikuti umum</button></div>
         <label className="f" style={{ marginTop: 10 }}>Mode warna</label><ColorPick app={app} id={f.id} />

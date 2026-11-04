@@ -3,9 +3,13 @@ import { Fragment, type ReactNode } from 'react';
 import { P } from '@/lib/icons';
 import { COL, eff } from '@/lib/pricing';
 import type { App } from '@/lib/useApp';
-import type { Color } from '@/lib/types';
+import type { Color, PFile } from '@/lib/types';
 
 export const Icon = ({ n }: { n: string }) => <svg viewBox="0 0 24 24" dangerouslySetInnerHTML={{ __html: P[n] }} />;
+
+export const Thumb = ({ f, lg }: { f: PFile; lg?: boolean }) => (
+  <div className={'fi' + (lg ? ' lg' : '')}>{f.thumb ? <img src={f.thumb} alt={'Pratinjau ' + f.name} /> : <Icon n="file" />}</div>
+);
 
 export function Shell({ app, root, children }: { app: App; root?: boolean; children: ReactNode }) {
   const h = app.view === 'hist';
